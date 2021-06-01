@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,5 +16,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sensorsManagement = new SensorsManagement((SensorManager) getSystemService(Context.SENSOR_SERVICE));
+    }
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        sensorsManagement.setSensorsListeners();
+    }
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        sensorsManagement.unsetSensorsListeners();
     }
 }
