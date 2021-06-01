@@ -9,6 +9,7 @@ public class SensorsManagement implements SensorEventListener
 {
     private SensorManager sensorManager;
     private Sensor sensorLight;
+    private float valLight;
 
     SensorsManagement(SensorManager sensorManager)
     {
@@ -30,13 +31,16 @@ public class SensorsManagement implements SensorEventListener
     public final void onSensorChanged(SensorEvent event) {
         // The light sensor returns a single value.
         // Many sensors return 3 values, one for each axis.
-
+        if(event.sensor == sensorLight)
+        {
+            valLight = event.values[0];
+        }
         // Do something with this sensor value.
     }
 
     String getSensorsInfo()
     {
-        return "";
+        return "Light: "+valLight;
     }
 
     void setSensorsListeners()
