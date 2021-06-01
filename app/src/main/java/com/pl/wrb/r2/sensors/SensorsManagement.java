@@ -8,8 +8,8 @@ import android.hardware.SensorManager;
 public class SensorsManagement implements SensorEventListener
 {
     private SensorManager sensorManager;
-    private Sensor sensorLight, sensorAmbientTemperature;
-    private float valLight, valTemperature;
+    private Sensor sensorLight, sensorAmbientTemperature, sensorPressure;
+    private float valLight, valTemperature, valPressure;
     private String errorNote = "";
 
     SensorsManagement(SensorManager sensorManager)
@@ -27,6 +27,11 @@ public class SensorsManagement implements SensorEventListener
         } else {
             errorNote += "NO AMBIENT TEMPERATURE SENSOR\n";
         }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null){
+            sensorPressure= sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        } else {
+            errorNote += "NO PRESSURE SENSOR\n";
+        }
     }
 
     @Override
@@ -40,17 +45,21 @@ public class SensorsManagement implements SensorEventListener
         // Many sensors return 3 values, one for each axis.
         if(event.sensor == sensorLight) valLight = event.values[0];
         if(event.sensor == sensorAmbientTemperature) valTemperature = event.values[0];
+        if(event.sensor == sensorPressure) valPressure= event.values[0];
         // Do something with this sensor value.
     }
 
     String getSensorsInfo()
     {
-        return "Light: " + valLight + "\nAmbient Temperature: " + valTemperature + "\nErrors:\n" + errorNote;
+        return "Light: " + valLight + "lx\nAmbient Temperature: " + valTemperature +
+                "°C\nPressure: "+ valPressure + "hPa\n" + "\n\nErrors:\n" + errorNote;
     }
 
     void setSensorsListeners()
     {
         sensorManager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorAmbientTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL);
     }
     void unsetSensorsListeners()
     {
