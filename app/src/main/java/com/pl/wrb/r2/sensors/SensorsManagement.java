@@ -8,8 +8,9 @@ import android.hardware.SensorManager;
 public class SensorsManagement implements SensorEventListener
 {
     private SensorManager sensorManager;
-    private Sensor sensorLight;
-    private float valLight;
+    private Sensor sensorLight, sensorAmbientTemperature;
+    private float valLight, valTemperature;
+    private String errorNote = "";
 
     SensorsManagement(SensorManager sensorManager)
     {
@@ -19,6 +20,12 @@ public class SensorsManagement implements SensorEventListener
             sensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         } else {
             // Failure! No light sensor.
+            errorNote += "NO LIGHT SENSOR\n";
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
+            sensorAmbientTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        } else {
+            errorNote += "NO AMBIENT TEMPERATURE SENSOR\n";
         }
     }
 
@@ -31,16 +38,14 @@ public class SensorsManagement implements SensorEventListener
     public final void onSensorChanged(SensorEvent event) {
         // The light sensor returns a single value.
         // Many sensors return 3 values, one for each axis.
-        if(event.sensor == sensorLight)
-        {
-            valLight = event.values[0];
-        }
+        if(event.sensor == sensorLight) valLight = event.values[0];
+        if(event.sensor == sensorAmbientTemperature) valTemperature = event.values[0];
         // Do something with this sensor value.
     }
 
     String getSensorsInfo()
     {
-        return "Light: "+valLight;
+        return "Light: " + valLight + "\nAmbient Temperature: " + valTemperature + "\nErrors:\n" + errorNote;
     }
 
     void setSensorsListeners()
