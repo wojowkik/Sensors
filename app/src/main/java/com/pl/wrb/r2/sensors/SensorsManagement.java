@@ -71,9 +71,9 @@ public class SensorsManagement implements SensorEventListener
         if(event.sensor == sensorHumidity) valHumidity= event.values[0];
         //three sensor values
         if(event.sensor == sensorAccelerometr){
-            valAccelerometr[0] = event.values[0];
-            valAccelerometr[1] = event.values[1];
-            valAccelerometr[2] = event.values[2];
+            valAccelerometr[0] = round3(event.values[0]);
+            valAccelerometr[1] = round3(event.values[1]);
+            valAccelerometr[2] = round3(event.values[2]);
         }
         // Do something with this sensor value.
     }
@@ -89,6 +89,13 @@ public class SensorsManagement implements SensorEventListener
     private String getSensorDescription(float [] value, String sensorName, String unit)
     {
         return sensorName + ":\n\t\tX: " + value[0] + unit + "\n\t\tY: " + value[1] + unit + "\n\t\tZ: " + value[2] + unit + "\n";
+    }
+    private float round3(float number)
+    {
+        number *= 1000;
+        number = Math.round(number);
+        number /= 1000;
+        return number;
     }
 
     void setSensorsListeners()
