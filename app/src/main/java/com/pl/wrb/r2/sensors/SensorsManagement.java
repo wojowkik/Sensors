@@ -9,9 +9,9 @@ public class SensorsManagement implements SensorEventListener
 {
     private SensorManager sensorManager;
     private Sensor sensorLight, sensorAmbientTemperature, sensorPressure, sensorProximity, sensorHumidity,
-    sensorAccelerometr, sensorGravity, sensorGyroscope, sensorAccelerometrLinear;
+    sensorAccelerometr, sensorGravity, sensorGyroscope, sensorAccelerometrLinear, sensorMagneticField;
     private float valLight, valTemperature, valPressure, valProximity, valHumidity;
-    private float[] valAccelerometr, valGravity, valGyroscope, valAccelerometrLinear;
+    private float[] valAccelerometr, valGravity, valGyroscope, valAccelerometrLinear, valMagneticField;
     private String errorNote = "";
 
     SensorsManagement(SensorManager sensorManager)
@@ -22,6 +22,7 @@ public class SensorsManagement implements SensorEventListener
         valGravity = new float[3];
         valGyroscope = new float[3];
         valAccelerometrLinear = new float[3];
+        valMagneticField = new float[3];
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null){
             // Success! There's a light sensor.
@@ -71,6 +72,11 @@ public class SensorsManagement implements SensorEventListener
         } else {
             errorNote += "NO LINEAR ACCELERATION SENSOR\n";
         }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null){
+            sensorMagneticField= sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        } else {
+            errorNote += "NO MAGNETIC FIELD SENSOR\n";
+        }
     }
 
     @Override
@@ -108,6 +114,11 @@ public class SensorsManagement implements SensorEventListener
             valAccelerometrLinear[1] = round3(event.values[1]);
             valAccelerometrLinear[2] = round3(event.values[2]);
         }
+        if(event.sensor == sensorAccelerometrLinear){
+            valMagneticField[0] = round3(event.values[0]);
+            valMagneticField[1] = round3(event.values[1]);
+            valMagneticField[2] = round3(event.values[2]);
+        }
         // Do something with this sensor value.
     }
 
@@ -120,6 +131,7 @@ public class SensorsManagement implements SensorEventListener
                 getSensorDescription(valAccelerometrLinear, "Accelerometr Linear", "m/s2") +
                 getSensorDescription(valGravity, "Gravity", "m/s2") +
                 getSensorDescription(valGyroscope, "Gyroscope", "rad/s") +
+                getSensorDescription(valMagneticField, "Magnetic Field", "μT") +
                 "\n\nErrors:\n" + errorNote;
     }
     private String getSensorDescription(float [] value, String sensorName, String unit)
@@ -144,6 +156,7 @@ public class SensorsManagement implements SensorEventListener
         sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorAccelerometrLinear, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
     }
     void unsetSensorsListeners()
     {
