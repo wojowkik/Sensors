@@ -9,9 +9,9 @@ public class SensorsManagement implements SensorEventListener
 {
     private SensorManager sensorManager;
     private Sensor sensorLight, sensorAmbientTemperature, sensorPressure, sensorProximity, sensorHumidity,
-    sensorAccelerometr, sensorGravity, sensorGyroscope;
+    sensorAccelerometr, sensorGravity, sensorGyroscope, sensorAccelerometrLinear;
     private float valLight, valTemperature, valPressure, valProximity, valHumidity;
-    private float[] valAccelerometr, valGravity, valGyroscope;
+    private float[] valAccelerometr, valGravity, valGyroscope, valAccelerometrLinear;
     private String errorNote = "";
 
     SensorsManagement(SensorManager sensorManager)
@@ -21,6 +21,7 @@ public class SensorsManagement implements SensorEventListener
         valAccelerometr = new float[3];
         valGravity = new float[3];
         valGyroscope = new float[3];
+        valAccelerometrLinear = new float[3];
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null){
             // Success! There's a light sensor.
@@ -65,6 +66,11 @@ public class SensorsManagement implements SensorEventListener
         } else {
             errorNote += "NO GYROSCOPE SENSOR\n";
         }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null){
+            sensorAccelerometrLinear= sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        } else {
+            errorNote += "NO LINEAR ACCELERATION SENSOR\n";
+        }
     }
 
     @Override
@@ -97,6 +103,11 @@ public class SensorsManagement implements SensorEventListener
             valGyroscope[1] = round3(event.values[1]);
             valGyroscope[2] = round3(event.values[2]);
         }
+        if(event.sensor == sensorAccelerometrLinear){
+            valAccelerometrLinear[0] = round3(event.values[0]);
+            valAccelerometrLinear[1] = round3(event.values[1]);
+            valAccelerometrLinear[2] = round3(event.values[2]);
+        }
         // Do something with this sensor value.
     }
 
@@ -106,6 +117,7 @@ public class SensorsManagement implements SensorEventListener
                 "°C\nPressure: "+ valPressure + "hPa\nProximity: " + valProximity +
                 "cm\nHumidity: " + valHumidity + "%\n" +
                 getSensorDescription(valAccelerometr, "Accelerometr", "m/s2") +
+                getSensorDescription(valAccelerometrLinear, "Accelerometr Linear", "m/s2") +
                 getSensorDescription(valGravity, "Gravity", "m/s2") +
                 getSensorDescription(valGyroscope, "Gyroscope", "rad/s") +
                 "\n\nErrors:\n" + errorNote;
@@ -131,6 +143,7 @@ public class SensorsManagement implements SensorEventListener
         sensorManager.registerListener(this, sensorAccelerometr, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorAccelerometrLinear, SensorManager.SENSOR_DELAY_NORMAL);
     }
     void unsetSensorsListeners()
     {
