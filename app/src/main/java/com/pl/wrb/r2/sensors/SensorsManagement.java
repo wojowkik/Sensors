@@ -9,9 +9,9 @@ public class SensorsManagement implements SensorEventListener
 {
     private SensorManager sensorManager;
     private Sensor sensorLight, sensorAmbientTemperature, sensorPressure, sensorProximity, sensorHumidity,
-    sensorAccelerometr;
+    sensorAccelerometr, sensorGravity;
     private float valLight, valTemperature, valPressure, valProximity, valHumidity;
-    private float[] valAccelerometr;
+    private float[] valAccelerometr, valGravity;
     private String errorNote = "";
 
     SensorsManagement(SensorManager sensorManager)
@@ -19,6 +19,7 @@ public class SensorsManagement implements SensorEventListener
         this.sensorManager = sensorManager;
 
         valAccelerometr = new float[3];
+        valGravity = new float[3];
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null){
             // Success! There's a light sensor.
@@ -53,6 +54,11 @@ public class SensorsManagement implements SensorEventListener
         } else {
             errorNote += "NO ACCELEROMETER SENSOR\n";
         }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null){
+            sensorGravity= sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        } else {
+            errorNote += "NO GRAVITY SENSOR\n";
+        }
     }
 
     @Override
@@ -75,6 +81,11 @@ public class SensorsManagement implements SensorEventListener
             valAccelerometr[1] = round3(event.values[1]);
             valAccelerometr[2] = round3(event.values[2]);
         }
+        if(event.sensor == sensorGravity){
+            valGravity[0] = round3(event.values[0]);
+            valGravity[1] = round3(event.values[1]);
+            valGravity[2] = round3(event.values[2]);
+        }
         // Do something with this sensor value.
     }
 
@@ -84,6 +95,7 @@ public class SensorsManagement implements SensorEventListener
                 "°C\nPressure: "+ valPressure + "hPa\nProximity: " + valProximity +
                 "cm\nHumidity: " + valHumidity + "%\n" +
                 getSensorDescription(valAccelerometr, "Accelerometr", "m/s2") +
+                getSensorDescription(valGravity, "Gravity", "m/s2") +
                 "\n\nErrors:\n" + errorNote;
     }
     private String getSensorDescription(float [] value, String sensorName, String unit)
@@ -105,6 +117,7 @@ public class SensorsManagement implements SensorEventListener
         sensorManager.registerListener(this, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorProximity, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorAccelerometr, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
     }
     void unsetSensorsListeners()
     {
