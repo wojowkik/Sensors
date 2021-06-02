@@ -120,12 +120,12 @@ public class SensorsManagement implements SensorEventListener
             valAccelerometrLinear[1] = round3(event.values[1]);
             valAccelerometrLinear[2] = round3(event.values[2]);
         }
-        if(event.sensor == sensorAccelerometrLinear){
+        if(event.sensor == sensorMagneticField){
             valMagneticField[0] = round3(event.values[0]);
             valMagneticField[1] = round3(event.values[1]);
             valMagneticField[2] = round3(event.values[2]);
         }
-        if(event.sensor == sensorAccelerometrLinear){
+        if(event.sensor == sensorRotationVector){
             valRotationVector[0] = round3(event.values[0]);
             valRotationVector[1] = round3(event.values[1]);
             valRotationVector[2] = round3(event.values[2]);
